@@ -31,6 +31,5 @@ export async function applyResumeApi(token, _, jobData) {
     throw new Error(`Error creating application: ${applicationError.message}`);
   }
 
-  console.log("Insertion Response:", data);
   return data;
 }

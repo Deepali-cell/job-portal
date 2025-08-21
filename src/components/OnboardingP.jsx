@@ -29,7 +29,8 @@ const OnboardingP = () => {
       </div>
     );
   }
-  useEffect(() => {
+
+useEffect(() => {
     if (user?.unsafeMetadata?.role) {
       navigate(
         user?.unsafeMetadata?.role === "candidate" ? "/jobs" : "/postjob"

@@ -25,7 +25,6 @@ const ShowCandidateApplications = () => {
       </div>
     );
   }
-  console.log(applications);
   return (
     <>
       <div className="p-6">

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import useFetchHook from "@/hooks/useFetchHook";
-import { candidateJobStatusApi } from "@/api/CandidateJobStatusApi";
+import { candidateJobStatusApi } from "@/api/candidateJobStatusApi";
 import {
   Select,
   SelectContent,

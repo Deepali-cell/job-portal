@@ -13,6 +13,8 @@ import { BriefcaseBusiness, Heart, PenBox } from "lucide-react";
 
 export const Header = () => {
   const [showSignIn, setShowSignIn] = useState(false);
+
+  // useSearchParams ka use tab hota hai jab aapko URL ke through state control karni ho.
   const [search, setSearch] = useSearchParams();
   const { user } = useUser();
 
