@@ -1,4 +1,4 @@
-import { useUser, useClerk } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -6,15 +6,15 @@ import { Loader2 } from "lucide-react";
 
 const OnboardingP = () => {
   const { user, isLoaded } = useUser();
-  const { user: clerkUser } = useClerk(); // ✅ Get user object for updates
   const navigate = useNavigate();
 
   const handleClickFunction = async (role) => {
-    if (!clerkUser) return;
+    if (!user) return;
 
     try {
-      await clerkUser.update({
-        publicMetadata: { role }, // ✅ Correct way to set role
+      // ✅ User object se hi update karo
+      await user.update({
+        publicMetadata: { role },
       });
 
       navigate(role === "candidate" ? "/jobs" : "/postjob");
@@ -39,13 +39,13 @@ const OnboardingP = () => {
 
   return (
     <div className="flex justify-center min-h-screen">
-      <div className="px-8 py-6 rounded-2xl shadow-lg m w-full text-center">
+      <div className="px-8 py-6 rounded-2xl shadow-lg w-full text-center">
         <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
           I am a ...
         </h1>
         <p className="text-gray-600 mt-2">Choose your role to get started.</p>
 
-        <div className="mt-6 space-y-4 flex flex-col gap-y-4">
+        <div className="mt-6 flex flex-col gap-y-4">
           <Button
             className="mx-auto py-6 text-lg font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
             onClick={() => handleClickFunction("candidate")}
