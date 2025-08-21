@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -6,14 +6,15 @@ import { Loader2 } from "lucide-react";
 
 const OnboardingP = () => {
   const { user, isLoaded } = useUser();
+  const { user: clerkUser } = useClerk(); // ✅ Get user object for updates
   const navigate = useNavigate();
 
   const handleClickFunction = async (role) => {
-    if (!user) return;
+    if (!clerkUser) return;
 
     try {
-      await user.update({
-        publicMetadata: { role }, // ✅ use publicMetadata instead of unsafeMetadata
+      await clerkUser.update({
+        publicMetadata: { role }, // ✅ Correct way to set role
       });
 
       navigate(role === "candidate" ? "/jobs" : "/postjob");
