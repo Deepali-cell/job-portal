@@ -13,7 +13,7 @@ const OnboardingP = () => {
 
     try {
       await user.update({
-        unsafeMetadata: { role }, // Use publicMetadata instead of unsafeMetadata
+        publicMetadata: { role }, // ✅ use publicMetadata instead of unsafeMetadata
       });
 
       navigate(role === "candidate" ? "/jobs" : "/postjob");
@@ -21,6 +21,12 @@ const OnboardingP = () => {
       console.error("Error updating user metadata:", error);
     }
   };
+
+  useEffect(() => {
+    if (isLoaded && user?.publicMetadata?.role) {
+      navigate(user.publicMetadata.role === "candidate" ? "/jobs" : "/postjob");
+    }
+  }, [isLoaded, user, navigate]);
 
   if (!isLoaded) {
     return (
@@ -30,30 +36,23 @@ const OnboardingP = () => {
     );
   }
 
-useEffect(() => {
-    if (user?.unsafeMetadata?.role) {
-      navigate(
-        user?.unsafeMetadata?.role === "candidate" ? "/jobs" : "/postjob"
-      );
-    }
-  }, [user]);
   return (
-    <div className="flex justify-center min-h-screen  ">
-      <div className=" px-8 py-6 rounded-2xl shadow-lg m w-full text-center">
-        <h1 className="text-8xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+    <div className="flex justify-center min-h-screen">
+      <div className="px-8 py-6 rounded-2xl shadow-lg m w-full text-center">
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
           I am a ...
         </h1>
         <p className="text-gray-600 mt-2">Choose your role to get started.</p>
 
         <div className="mt-6 space-y-4 flex flex-col gap-y-4">
           <Button
-            className="mx-[300px] py-6 text-lg font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
+            className="mx-auto py-6 text-lg font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
             onClick={() => handleClickFunction("candidate")}
           >
             Candidate
           </Button>
           <Button
-            className="mx-[300px] py-6 text-lg font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
+            className="mx-auto py-6 text-lg font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md transition-transform transform hover:scale-105"
             onClick={() => handleClickFunction("recruiter")}
           >
             Recruiter

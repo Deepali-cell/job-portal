@@ -59,12 +59,12 @@ export const Header = () => {
 
             <UserButton appearance={{ elements: { avatarBox: "w-10 h-10" } }}>
               <UserButton.MenuItems>
-                <UserButton.Link
+                <UserButton.Action
                   label="My Jobs"
                   labelIcon={<BriefcaseBusiness size={15} />}
                   onClick={() => navigate("/myjobs")}
                 />
-                <UserButton.Link
+                <UserButton.Action
                   label="Save Jobs"
                   labelIcon={<Heart size={15} />}
                   onClick={() => navigate("/savejob")}

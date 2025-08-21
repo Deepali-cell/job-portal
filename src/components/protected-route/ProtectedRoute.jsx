@@ -5,29 +5,23 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isLoaded, isSignedIn, user } = useUser();
   const { pathname } = useLocation();
 
-  if (!isLoaded) {
-    return null; // Prevents rendering until Clerk is loaded
-  }
+  if (!isLoaded) return null;
 
-  // authentication protectetion check first
-
+  // 1. User not signed in → redirect to login
   if (!isSignedIn) {
-    return <Navigate to={`/?sign-in=true`} replace />; // replace => Prevents unnecessary back button issues
+    return <Navigate to={`/?sign-in=true`} replace />;
   }
 
-  // after authentication check onboarding
+  // 2. User signed in but no role → go to onboarding
+  if (user && !user.publicMetadata?.role && pathname !== "/onboarding") {
+    return <Navigate to="/onboarding" />;
+  }
 
-  if (
-    user !== undefined &&
-    !user?.unsafeMetadata?.role &&
-    pathname !== "/onboarding"
-  ) {
-    return <Navigate to={"/onboarding"} />;
+  // 3. Role-based protection
+  if (allowedRoles && !allowedRoles.includes(user.publicMetadata.role)) {
+    return <Navigate to="/unauthorizedrole" replace />;
   }
-  // Role-based protection: Check if user's role is allowed
-  if (allowedRoles && !allowedRoles.includes(user.unsafeMetadata.role)) {
-    return <Navigate to="/unauthorizedrole" replace />; // Redirect unauthorized users
-  }
+
   return children;
 };
 
