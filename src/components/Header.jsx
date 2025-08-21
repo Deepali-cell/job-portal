@@ -10,9 +10,12 @@ import {
   useUser,
 } from "@clerk/clerk-react";
 import { BriefcaseBusiness, Heart, PenBox } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [showSignIn, setShowSignIn] = useState(false);
+
+  const navigate = useNavigate();
 
   // useSearchParams ka use tab hota hai jab aapko URL ke through state control karni ho.
   const [search, setSearch] = useSearchParams();
@@ -59,12 +62,12 @@ export const Header = () => {
                 <UserButton.Link
                   label="My Jobs"
                   labelIcon={<BriefcaseBusiness size={15} />}
-                  href="/myjobs"
+                  onClick={() => navigate("/myjobs")}
                 />
                 <UserButton.Link
                   label="Save Jobs"
                   labelIcon={<Heart size={15} />}
-                  href="/savejob"
+                  onClick={() => navigate("/savejob")}
                 />
               </UserButton.MenuItems>
             </UserButton>
