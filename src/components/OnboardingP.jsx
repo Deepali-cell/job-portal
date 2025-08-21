@@ -14,10 +14,14 @@ const OnboardingP = () => {
     try {
       // ✅ User object se hi update karo
       await user.update({
-        publicMetadata: { role },
+        unsafeMetadata: { role },
       });
 
-      navigate(role === "candidate" ? "/jobs" : "/postjob");
+      if (isLoaded && user?.unsafeMetadata?.role) {
+        navigate(
+          user.unsafeMetadata.role === "candidate" ? "/jobs" : "/postjob"
+        );
+      }
     } catch (error) {
       console.error("Error updating user metadata:", error);
     }

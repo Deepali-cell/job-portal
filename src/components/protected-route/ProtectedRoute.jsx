@@ -13,12 +13,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   // 2. User signed in but no role → go to onboarding
-  if (user && !user.publicMetadata?.role && pathname !== "/onboarding") {
+  if (user && !user.unsafeMetadata?.role && pathname !== "/onboarding") {
     return <Navigate to="/onboarding" />;
   }
 
   // 3. Role-based protection
-  if (allowedRoles && !allowedRoles.includes(user.publicMetadata.role)) {
+  if (allowedRoles && !allowedRoles.includes(user.unsafeMetadata.role)) {
     return <Navigate to="/unauthorizedrole" replace />;
   }
 
