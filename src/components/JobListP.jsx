@@ -36,14 +36,17 @@ const JobListP = ({
     setcompany_id("");
     setsearchQuery("");
     if (searchInputRef.current) {
-      searchInputRef.current.value = ""; // Clear input field
+      searchInputRef.current.value = "";
     }
   };
 
   return (
-    <div className="px-6">
+    <div className="px-4 sm:px-6 lg:px-16">
+      {/* Heading */}
       <div className="flex justify-center items-center mb-8">
-        <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold 
+          bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 
+          text-transparent bg-clip-text text-center">
           Latest Jobs
         </h1>
       </div>
@@ -52,25 +55,26 @@ const JobListP = ({
       <div className="flex flex-col items-center">
         <form
           onSubmit={handleSearch}
-          className="flex items-center gap-3 mb-6 w-full"
+          className="flex flex-col sm:flex-row items-center gap-3 mb-6 w-full max-w-2xl"
         >
           <Input
             ref={searchInputRef}
             type="text"
             name="search-query"
             placeholder="Search jobs..."
-            className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            className="border px-4 py-2 rounded-lg w-full"
           />
-          <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+          <Button type="submit" className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600">
             Search
           </Button>
         </form>
 
-        {/* Filters & Clear Button in One Row */}
-        <div className="flex flex-wrap items-center justify-between mb-6 w-full">
-          {/* Location Filter */}
+        {/* Filters */}
+        <div className="flex flex-col md:flex-row md:flex-wrap items-center justify-between gap-4 mb-8 w-full">
+
+          {/* Location */}
           <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger className="w-full md:w-64 border-gray-300 shadow-sm focus:ring-blue-500">
+            <SelectTrigger className="w-full md:w-64 border-gray-300 shadow-sm">
               <SelectValue placeholder="Filter by location" />
             </SelectTrigger>
             <SelectContent>
@@ -84,9 +88,9 @@ const JobListP = ({
             </SelectContent>
           </Select>
 
-          {/* Company Filter */}
+          {/* Company */}
           <Select value={company_id} onValueChange={setcompany_id}>
-            <SelectTrigger className="w-full md:w-64 border-gray-300 shadow-sm focus:ring-blue-500">
+            <SelectTrigger className="w-full md:w-64 border-gray-300 shadow-sm">
               <SelectValue placeholder="Filter by Company" />
             </SelectTrigger>
             <SelectContent>
@@ -100,10 +104,10 @@ const JobListP = ({
             </SelectContent>
           </Select>
 
-          {/* Clear Filters Button */}
+          {/* Clear Filters */}
           <Button
             onClick={clearQueries}
-            className="bg-red-500 hover:bg-red-600 text-white"
+            className="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white"
           >
             Clear Filters
           </Button>
@@ -117,9 +121,16 @@ const JobListP = ({
         </div>
       )}
 
-      {/* Job Listings */}
+      {/* Job Cards Grid */}
       {!joblistLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          lg:grid-cols-3 
+          gap-6 
+          mb-10"
+        >
           {jobs.length ? (
             jobs.map((job) => (
               <JobCard

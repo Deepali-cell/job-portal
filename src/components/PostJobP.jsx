@@ -3,7 +3,7 @@ import { PostJobSchema } from "@/schemas/PostJobSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
+import { Input } from "./ui/input";
 import {
   Select,
   SelectContent,
@@ -17,7 +17,6 @@ import useFetchHook from "@/hooks/useFetchHook";
 import { getCompaniesApi } from "@/api/getCompaniesApi";
 import { useUser } from "@clerk/clerk-react";
 import { Loader2 } from "lucide-react";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Navigate, useNavigate } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
@@ -27,7 +26,7 @@ import AddCompany from "./AddCompany";
 const PostJobP = () => {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
-  // form fields
+
   const {
     register,
     handleSubmit,
@@ -39,7 +38,6 @@ const PostJobP = () => {
     resolver: zodResolver(PostJobSchema),
   });
 
-  // Fetch companies
   const {
     fn: getcompanyfn,
     data: companies,
@@ -50,7 +48,6 @@ const PostJobP = () => {
     if (isLoaded) getcompanyfn();
   }, [isLoaded]);
 
-  // post job
   const {
     fn: postjobfn,
     loading: postjobloading,
@@ -65,6 +62,7 @@ const PostJobP = () => {
       isOpen: true,
     });
   };
+
   useEffect(() => {
     if (postjobdata?.length > 0) {
       navigate("/jobs");
@@ -73,7 +71,7 @@ const PostJobP = () => {
 
   if (!isLoaded || companiesLoading) {
     return (
-      <div className="flex items-center justify-center h-screen ">
+      <div className="flex items-center justify-center h-screen">
         <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
       </div>
     );
@@ -84,13 +82,17 @@ const PostJobP = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg text-white">
-      <h1 className="text-2xl font-bold text-center mb-6">Post a Job</h1>
+    <div className="max-w-3xl mx-auto bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg text-white mt-6 mb-20">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+        Post a Job
+      </h1>
+
       {postjoberror && (
-        <p className="text-red-400 text-center">{postjoberror}</p>
+        <p className="text-red-400 text-center mb-4">{postjoberror}</p>
       )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Job Title */}
+        {/* ✅ Title */}
         <div>
           <Label className="font-medium my-2">Job Title</Label>
           <Input
@@ -104,11 +106,11 @@ const PostJobP = () => {
           )}
         </div>
 
+        {/* ✅ Description */}
         <div>
           <Label className="font-medium my-2">Job Description</Label>
           <Input
             {...register("description")}
-            type="text"
             placeholder="Enter job description..."
             className="w-full border-gray-600 bg-gray-700 text-white"
           />
@@ -118,10 +120,11 @@ const PostJobP = () => {
             </p>
           )}
         </div>
-        {/* Location & Company Row */}
-        <div className="flex gap-4">
+
+        {/* ✅ Location & Company → Responsive */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Location */}
-          <div className="w-1/2">
+          <div>
             <Label className="font-medium my-2">Location</Label>
             <Controller
               name="location"
@@ -129,17 +132,17 @@ const PostJobP = () => {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full border-gray-600 bg-gray-700 text-white">
-                    <SelectValue placeholder="Select a location" />
+                    <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-700">
                     <SelectGroup>
-                      {State.getStatesOfCountry("IN").map(({ name }) => (
+                      {State.getStatesOfCountry("IN").map((state) => (
                         <SelectItem
-                          key={name}
-                          value={name}
+                          key={state.name}
+                          value={state.name}
                           className="text-white"
                         >
-                          {name}
+                          {state.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -154,8 +157,8 @@ const PostJobP = () => {
             )}
           </div>
 
-          {/* Company Selection */}
-          <div className="w-1/2">
+          {/* Company */}
+          <div>
             <Label className="font-medium my-2">Company</Label>
             <Controller
               name="company_id"
@@ -163,17 +166,11 @@ const PostJobP = () => {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full border-gray-600 bg-gray-700 text-white">
-                    <SelectValue placeholder="Select a company">
-                      {field.value
-                        ? companies?.find(
-                            (com) => com.id === Number(field.value)
-                          )?.name
-                        : "Company"}
-                    </SelectValue>
+                    <SelectValue placeholder="Select company" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-700">
                     <SelectGroup>
-                      {companies?.map(({ name, id }) => (
+                      {companies?.map(({ id, name }) => (
                         <SelectItem
                           key={id}
                           value={id.toString()}
@@ -194,16 +191,18 @@ const PostJobP = () => {
             )}
           </div>
         </div>
-        {/* add new company */}
+
+        {/* ✅ Add new company section */}
         <AddCompany getcompanyfn={getcompanyfn} />
-        {/* Requirements (Markdown Editor) */}
+
+        {/* ✅ Requirements - Markdown Editor */}
         <div>
           <Label className="font-medium my-2">Requirements</Label>
           <Controller
             name="requirements"
             control={control}
             render={({ field }) => (
-              <div className="border border-gray-600 rounded-md bg-gray-700">
+              <div className="border border-gray-600 rounded-md bg-gray-700 p-2">
                 <MDEditor value={field.value} onChange={field.onChange} />
               </div>
             )}
@@ -215,19 +214,20 @@ const PostJobP = () => {
           )}
         </div>
 
-        {/* Buttons */}
-        <div className="flex justify-between mt-4">
+        {/* ✅ Buttons responsive */}
+        <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6">
           <Button
             type="submit"
-            className="w-32 bg-green-600 hover:bg-green-700 text-white"
+            className="w-full sm:w-40 bg-green-600 hover:bg-green-700 text-white"
             disabled={postjobloading}
           >
             {postjobloading ? "Submitting..." : "Submit"}
           </Button>
+
           <Button
             type="button"
             variant="outline"
-            className="w-32 border-gray-500 text-gray-400 hover:bg-gray-700"
+            className="w-full sm:w-40 border-gray-500 text-gray-400 hover:bg-gray-700"
             onClick={() => reset()}
           >
             Cancel

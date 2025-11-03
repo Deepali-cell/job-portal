@@ -13,14 +13,12 @@ const SingleJobPage = () => {
   const { isLoaded, user } = useUser();
   const { id } = useParams();
 
-  // get single job data
+  // get single job
   const {
     fn: getSingleJobfn,
     data: getSingleJob,
     loading: getSingleJobLoading,
-  } = useFetchHook(getSingleJobApi, {
-    job_id: id,
-  });
+  } = useFetchHook(getSingleJobApi, { job_id: id });
 
   // update hiring status
   const { fn: updateJobHiringStatusfn } = useFetchHook(updateHiringStatusApi, {
@@ -31,6 +29,7 @@ const SingleJobPage = () => {
     const isOpen = value === "open";
     updateJobHiringStatusfn(isOpen).then(() => getSingleJobfn());
   };
+
   useEffect(() => {
     if (isLoaded) getSingleJobfn();
   }, [isLoaded]);
@@ -44,26 +43,38 @@ const SingleJobPage = () => {
   }
 
   return (
-    <>
-      <ShowSingleJobP
-        getSingleJob={getSingleJob}
-        handleHiringStatus={handleHiringStatus}
-        user={user}
-      />
-
-      {getSingleJob?.recruiter_id !== user.id && (
-        <ApplyResume
+    <div className="px-4 sm:px-6 lg:px-16 py-6 flex flex-col gap-10">
+      {/* ✅ SINGLE JOB DETAILS */}
+      <div className="w-full max-w-5xl mx-auto">
+        <ShowSingleJobP
           getSingleJob={getSingleJob}
+          handleHiringStatus={handleHiringStatus}
           user={user}
-          getSingleJobfn={getSingleJobfn}
-          applied={getSingleJob?.applications?.find(
-            (app) => app.candidate_id === user.id
-          )}
         />
+      </div>
+
+      {/* ✅ APPLY RESUME SECTION (Only for candidates) */}
+      {getSingleJob?.recruiter_id !== user.id && (
+        <div className="w-full max-w-4xl mx-auto">
+          <ApplyResume
+            getSingleJob={getSingleJob}
+            user={user}
+            getSingleJobfn={getSingleJobfn}
+            applied={getSingleJob?.applications?.find(
+              (app) => app.candidate_id === user.id
+            )}
+          />
+        </div>
       )}
+
+      {/* ✅ SHOW APPLICATIONS SECTION (Only for recruiter) */}
       {getSingleJob?.applications?.length > 0 &&
-        getSingleJob?.recruiter_id === user.id && <ShowApplyResumes getSingleJob={getSingleJob}/>}
-    </>
+        getSingleJob?.recruiter_id === user.id && (
+          <div className="w-full max-w-5xl mx-auto">
+            <ShowApplyResumes getSingleJob={getSingleJob} />
+          </div>
+        )}
+    </div>
   );
 };
 
